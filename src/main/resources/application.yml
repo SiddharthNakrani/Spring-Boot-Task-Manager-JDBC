@@ -1,0 +1,16 @@
+#spring:
+#  autoconfigure:
+#    exclude:
+#      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
+spring:
+  datasource:
+    url: jdbc:sqlserver://LAPTOP-CSP0KH0U\SQLEXPRESS;encrypt=true;trustServerCertificate=true;databaseName=TaskManager
+    username: siddharthdb
+    password: magnic2020@#
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    show-sql: true
+    hibernate:
+      naming:
+        physical-strategy: com.example.taskmanager.CustomNamingStrategy
