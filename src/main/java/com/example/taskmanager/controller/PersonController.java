@@ -1,11 +1,13 @@
 package com.example.taskmanager.controller;
 
 
+import com.example.taskmanager.model.Credential;
 import com.example.taskmanager.model.PersonDTO;
 
-import com.example.taskmanager.repository.personRepo.PersonRepository;
+import com.example.taskmanager.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -23,16 +25,23 @@ public class PersonController {
     @GetMapping(value = "/persons")
     @ResponseStatus(HttpStatus.OK)
     public List<PersonDTO> persons(@RequestParam (value = "name", required = false) String name) throws SQLException {
-        return personRepository.getAllPersons();
+        return personRepository.getAllPersons(name);
 
     }
 
 
     @GetMapping(value = "/persons/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Optional<PersonDTO> person(@PathVariable(value = "id") Integer personId) throws SQLException{
+    public ResponseEntity<?> person(@PathVariable(value = "id") Integer personId) throws SQLException{
 
-        return personRepository.getPersonById(personId);
+        Optional<PersonDTO> selectedPerson = personRepository.getPersonById(personId);
+
+        if(selectedPerson.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Person not found for the given credentials");
+        }
+        else{
+            return ResponseEntity.ok(selectedPerson);
+        }
     }
 
 
@@ -43,45 +52,26 @@ public class PersonController {
         return personRepository.addPerson(person);
     }
 
+    
+    @PostMapping(value = "/login")
+    @ResponseStatus(HttpStatus.OK)
+    public Optional<PersonDTO> Login(@RequestBody Credential cred) throws SQLException{
+        return personRepository.Login(cred);
+    }
+
+    @DeleteMapping(value = "/persons/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void DeletePerson(@PathVariable(value = "id") Integer id) throws SQLException {
+        personRepository.deletePerson(id);
+    }
 
 
-//
-//    @PostMapping(value = "/login")
-//    @ResponseStatus(HttpStatus.OK)
-//    public ResponseEntity<?> Login(@RequestBody Credential cred){
-//
-//        Person loginPerson = personRepository.findAll().stream()
-//                .filter(person -> {
-//                    String username = person.getUsername();
-//                    return username != null && username.toLowerCase().equals(cred.username().toLowerCase())
-//                            && person.getPassword().equals(cred.password());
-//                })
-//                .findFirst()
-//                .orElse(null);
-//
-//        if (loginPerson != null) {
-//            // Return 200 OK with the person if found
-//            return ResponseEntity.ok(loginPerson);
-//        } else {
-//            // Return 404 Not Found with an error message
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//                    .body("Person not found for the given credentials");
-//        }
-//    }
-//
-//
-//    @DeleteMapping(value = "/persons/{id}")
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void DeletePerson(@PathVariable(value = "id") Integer id){
-//        personRepository.deleteById(id);
-//    }
-//
-//
-//    @PutMapping("/persons/{id}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public void PersonUpdate(@RequestBody Person updatedPerson,@PathVariable(value = "id") Integer id){
-//        updatedPerson.setId(id);
-//        personRepository.save(updatedPerson);
-//    }
+
+    @PutMapping("/persons/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void PersonUpdate(@RequestBody PersonDTO updatedPerson,@PathVariable(value = "id") Integer id) throws SQLException {
+        updatedPerson.setPersonId(id);
+        personRepository.updatePerson(updatedPerson);
+    }
 
 }

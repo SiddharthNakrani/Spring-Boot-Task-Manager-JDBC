@@ -1,7 +1,7 @@
 package com.example.taskmanager.model;
 
 import java.util.Objects;
-
+import java.util.List;
 
 public class PersonDTO {
 
@@ -20,6 +20,8 @@ public class PersonDTO {
     private String email;
 
     private String phoneNumber;
+
+    private List<TaskDTO> tasks;
 
     public PersonDTO(){
 
@@ -99,6 +101,14 @@ public class PersonDTO {
         this.phoneNumber = phoneNumber;
     }
 
+    public List<TaskDTO> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<TaskDTO> tasks) {
+        this.tasks = tasks;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -111,4 +121,5 @@ public class PersonDTO {
     public int hashCode() {
         return Objects.hash(personId, firstName, lastName, userName, password, age, email, phoneNumber);
     }
+
 }
