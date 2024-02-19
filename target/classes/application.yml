@@ -9,8 +9,8 @@ spring:
     username: siddharthdb
     password: magnic2020@#
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-  jpa:
-    show-sql: true
-    hibernate:
-      naming:
-        physical-strategy: com.example.taskmanager.CustomNamingStrategy
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      naming:
+#        physical-strategy: com.example.taskmanager.CustomNamingStrategy
